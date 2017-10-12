@@ -1,0 +1,155 @@
+<?xml version="1.0"?>
+
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+
+            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd"
+       default-lazy-init="true">
+
+  <bean name="securitySystem#testable" class="org.apache.archiva.redback.system.DefaultSecuritySystem">
+    <property name="userManager" ref="userManager#memory"/>
+    <property name="keyManager" ref="keyManager#memory"/>
+  </bean>
+
+  <alias name="securitySystem#testable" alias="securitySystem"/>
+
+  <bean name="userRepositories" class="org.apache.archiva.security.DefaultUserRepositories">
+    <property name="securitySystem" ref="securitySystem#testable"/>
+    <property name="roleManager" ref="roleManager"/>
+  </bean>
+
+
+
+  <bean name="authorizer#rbac" class="org.apache.archiva.redback.authorization.rbac.RbacAuthorizer">
+    <property name="manager" ref="rbacManager#memory"/>
+    <property name="userManager" ref="userManager#memory"/>
+    <property name="evaluator" ref="permissionEvaluator"/>
+  </bean>
+
+  <bean name="permissionEvaluator" class="org.apache.archiva.redback.authorization.rbac.evaluator.DefaultPermissionEvaluator">
+    <property name="userManager" ref="userManager#memory"/>
+  </bean>
+
+  <bean name="roleManager" class="org.apache.archiva.redback.role.DefaultRoleManager">
+    <property name="rbacManager" ref="rbacManager#memory"/>
+    <property name="modelProcessor" ref="roleModelProcessor"/>
+    <property name="templateProcessor" ref="roleTemplateProcessor#test"/>
+  </bean>
+
+  <bean name="rbacManager#cached" class="org.apache.archiva.redback.rbac.cached.CachedRbacManager">
+    <property name="rbacImpl" ref="rbacManager#memory"/>
+  </bean>
+
+  <bean name="roleModelProcessor" class="org.apache.archiva.redback.role.processor.DefaultRoleModelProcessor">
+    <property name="rbacManager" ref="rbacManager#memory"/>
+  </bean>
+
+  <alias name="roleModelProcessor" alias="roleModelProcessor#test"/>
+
+  <bean name="roleTemplateProcessor" class="org.apache.archiva.redback.role.template.DefaultRoleTemplateProcessor">
+    <property name="rbacManager" ref="rbacManager#memory"/>
+  </bean>
+
+  <alias name="roleTemplateProcessor" alias="roleTemplateProcessor#test"/>
+
+  <bean name="servletAuthenticator" class="org.apache.archiva.security.ArchivaServletAuthenticator">
+    <property name="securitySystem" ref="securitySystem#testable"/>
+  </bean>
+
+  <alias name="servletAuthenticator" alias="servletAuthenticator#test"/>
+
+  <bean name="archivaConfiguration#default"  class="org.apache.archiva.configuration.DefaultArchivaConfiguration">
+    <property name="registry" ref="registry#test"/>
+  </bean>
+  <alias name="archivaConfiguration#default" alias="archivaConfiguration"/>
+
+  <alias name="commons-configuration" alias="registry#test"/>
+
+  <bean name="commons-configuration" class="org.apache.archiva.redback.components.registry.commons.CommonsConfigurationRegistry">
+    <property name="properties">
+      <value>
+        <![CDATA[
+        <configuration>
+          <system/>
+          <xml fileName="${basedir}/target/test-conf/archiva.xml" config-forceCreate="true"
+               config-optional="true"
+               config-name="org.apache.archiva.base" config-at="org.apache.archiva"/>
+        </configuration>
+        ]]>
+      </value>
+    </property>
+  </bean>
+
+  <bean name="repositoryStorage#maven2" class="org.apache.archiva.security.mock.MockBeanServices"/>
+
+  <bean name="archivaTaskScheduler#repository" class="org.apache.archiva.security.mock.MockBeanServices"/>
+
+  <bean name="scheduler" class="org.apache.archiva.redback.components.scheduler.DefaultScheduler">
+    <property name="properties">
+      <props>
+        <prop key="org.quartz.scheduler.instanceName">scheduler1</prop>
+        <prop key="org.quartz.threadPool.class">org.quartz.simpl.SimpleThreadPool</prop>
+        <prop key="org.quartz.threadPool.threadCount">2</prop>
+        <prop key="org.quartz.threadPool.threadPriority">4</prop>
+        <prop key="org.quartz.jobStore.class">org.quartz.simpl.RAMJobStore</prop>
+      </props>
+    </property>
+  </bean>
+
+  <alias name="userConfiguration#redback" alias="userConfiguration#default"/>
+  <alias name="authorizer#rbac" alias="authorizer#default"/>
+  <alias name="userManager#configurable" alias="userManager#default"/>
+
+  <!-- ***
+   JPA settings
+   *** -->
+  <bean name="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+    <property name="jpaVendorAdapter" >
+      <bean class="org.springframework.orm.jpa.vendor.OpenJpaVendorAdapter" />
+    </property>
+    <property name="persistenceXmlLocation" value="classpath:META-INF/persistence-hsqldb.xml" />
+    <property name="jpaPropertyMap">
+      <map>
+        <entry key="openjpa.ConnectionURL" value="jdbc:hsqldb:mem:redback_database" />
+        <entry key="openjpa.ConnectionDriverName" value="org.hsqldb.jdbcDriver" />
+        <entry key="openjpa.ConnectionUserName" value="sa" />
+        <entry key="openjpa.ConnectionPassword" value="" />
+        <entry key="openjpa.Log" value="${openjpa.Log:DefaultLevel=INFO,Runtime=ERROR,Tool=ERROR,SQL=ERROR,Schema=ERROR,MetaData=ERROR}" />
+        <entry key="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)" />
+        <entry key="openjpa.jdbc.MappingDefaults"
+               value="ForeignKeyDeleteAction=restrict,JoinForeignKeyDeleteAction=restrict"/>
+      </map>
+    </property>
+
+  </bean>
+
+  <bean name="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager" >
+    <property name="entityManagerFactory" ref="entityManagerFactory" />
+  </bean>
+
+  <tx:annotation-driven />
+  <!-- ***
+     End of JPA settings
+     *** -->
+</beans>

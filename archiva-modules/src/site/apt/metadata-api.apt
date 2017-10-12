@@ -1,0 +1,63 @@
+ ----
+ Metadata API
+ ----
+
+~~ Licensed to the Apache Software Foundation (ASF) under one                      
+~~ or more contributor license agreements.  See the NOTICE file                    
+~~ distributed with this work for additional information                           
+~~ regarding copyright ownership.  The ASF licenses this file                      
+~~ to you under the Apache License, Version 2.0 (the                               
+~~ "License"); you may not use this file except in compliance                      
+~~ with the License.  You may obtain a copy of the License at                      
+~~                                                                                 
+~~   http://www.apache.org/licenses/LICENSE-2.0                                    
+~~                                                                                 
+~~ Unless required by applicable law or agreed to in writing,                      
+~~ software distributed under the License is distributed on an                     
+~~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY                          
+~~ KIND, either express or implied.  See the License for the                       
+~~ specific language governing permissions and limitations                         
+~~ under the License.                                                              
+
+Metadata API and Persistence
+
+    The Metadata Java API is comprised of the following:
+
+        * The Java model
+
+        * The Metadata repository API
+
+        * The plugins for storing the metadata repository content
+
+* Metadata Models
+
+    The Java model is a very simply representation of the metadata. Presently the following are represented:
+
+        * {{{./apidocs/reference/org/apache/archiva/metadata/model/MetadataFacet.html} repository metadata facets}}
+
+        * {{{./apidocs/reference/org/apache/archiva/metadata/model/ProjectMetadata.html} project metadata}}
+
+        * {{{./apidocs/reference/org/apache/archiva/metadata/model/ProjectVersionMetadata.html} project version metadata}}
+
+        * various subtypes
+
+    More information can be found in the
+    {{{./apidocs/reference/org/apache/archiva/metadata/model/package-summary.html} org.apache.archiva.metadata.model}} package,
+    or the {{{./metadata/metadata-model/index.html} metadata-model}} module.
+
+* Metadata Repository API
+
+    The metadata repository API is responsible for accessing the metadata repository and persisting changes. This is
+    handled by the {{{./apidocs/reference/org/apache/archiva/metadata/repository/MetadataRepository.html} MetadataRepository}}
+    class.
+
+    More information can be found in the {{{./metadata/metadata-repository-api/index.html} metadata-repository-api}}
+    module.
+
+* Persistence
+
+    Currently, the only implementation of persistence for the metadata content is a flat-file option using Java
+    properties. The code is note yet production quality. You can find out more in the:
+    {{{./apidocs/reference/org/apache/archiva/metadata/repository/file/FileMetadataRepository.html} FileMetadataRepository}}
+    class.
+

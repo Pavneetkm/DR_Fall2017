@@ -1,0 +1,168 @@
+<?xml version="1.0"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~  http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+<document>
+  <properties>
+    <title>Feature Tour</title>
+    <author email="brett@apache.org">Brett Porter</author>
+  </properties>
+  <head>
+    <script src="../js/jquery.fancybox.pack.2.1.5.js" type="text/javascript"></script>
+    <script src="../js/jquery.mousewheel-3.0.6.pack.js" type="text/javascript"></script>
+    <script src="../js/tour-index.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="../css/jquery.fancybox.2.1.5.css" type="text/css" media="screen" />
+    <script type="text/javascript">
+
+  </script>
+  </head>
+  <body>
+
+
+
+
+    <style type="text/css">
+table {
+  width: inherit;
+  margin-left: 5em;
+}
+tr {
+  text-align: center;
+}
+td {
+  font-size: inherit;
+}
+table.bodyTable tr.a {
+  background-color: inherit; 
+}
+table.bodyTable tr.b {
+  background-color: inherit; 
+}
+    </style>
+    <section name="Archiva Feature Tour">
+
+      <p>
+        Archiva is a feature rich repository manager. Below is a short tour of some of the features that are available.
+      </p>
+  
+      <table>
+        <tr>
+          <td>
+            <a href="../images/tour/project-info.png" class="gallery_image" rel="gallery_image" title="Archiva provides an informative display for artifacts stored in the repository.
+                      This includes a user-friendly display of the Maven informations, as well as the relationships between projects.">
+              <img src="../images/tour/project-info.png" width="150" height="93" style="border: 1px solid silver; margin-bottom: 0.25em" alt="" /><br/>
+              1. Project Information
+            </a>
+          </td>
+          <td>
+            <a href="../images/tour/search-form.png" class="gallery_image" rel="gallery_image"
+                title="Archiva has both a user-friendly browsing interface, and powerful search functionalities. The contents of all artifacts are indexed,
+                          including Maven project information and Java class information to facilitate locating code within any repository.
+                          By using the Find Artifact feature, you can identify unknown artifacts based on the database of known checksums for known artifacts.">
+              <img src="../images/tour/search-form.png" width="150" height="93" style="border: 1px solid silver; margin-bottom: 0.25em" alt="" /><br/>
+              2. Artifact Search
+            </a>
+          </td>
+          <td>
+            <a href="../images/tour/remote-proxy-cache.png" class="gallery_image" rel="gallery_image"
+                title="Archiva can operate as a proxy for remote repositories, allowing you to improve build
+                          performance by caching artifacts in a closer network location, and control artifact
+                          usage through the use of white and black lists on proxy connectors.">
+              <img src="../images/tour/remote-proxy-cache.png" width="150" height="93" style="border: 1px solid silver; margin-bottom: 0.25em" alt="" /><br/>
+               3. Remote Proxying Cache
+            </a>
+          </td>
+          <td>
+            <a href="../images/tour/upload-files.png" class="gallery_image" rel="gallery_image"
+                title="Archiva now supports artifact uploads via UI. A pom file can also be included
+                          in the upload or Archiva can generate one during the upload.">
+              <img src="../images/tour/upload-files.png" width="150" height="93" style="border: 1px solid silver; margin-bottom: 0.25em" alt="" /><br/>
+               4. Artifact Upload
+            </a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="../images/tour/graphical-admin.png" class="gallery_image" rel="gallery_image"
+                title="Archiva has a comprehensive web-based administration interface for configuring repositories,
+                          remote proxies, scheduled jobs and more. The configuration is kept in sync with the XML
+                          configuration files so that they can also be hand-edited if necessary.">
+              <img src="../images/tour/graphical-admin.png" width="150" height="93" style="border: 1px solid silver; margin-left: 0.25em; margin-bottom: 0.25em" alt="" /><br/>
+              5. Graphical Administration
+            </a>
+          </td>
+          <td>
+            <a href="../images/tour/repos-group.png" class="gallery_image" rel="gallery_image"
+                title="Archiva implements the concept of virtual repositories, wherein a set of
+                          Archiva repositories can be grouped together under one URL and that one URL
+                          can be used by clients (s.a. Maven) to download from these repositories.">
+              <img src="../images/tour/repos-group.png" width="150" height="93" style="border: 1px solid silver; margin-left: 0.25em; margin-bottom: 0.25em" alt="" /><br/>
+              6. Virtual Repositories
+            </a>
+          </td>
+          <td>
+            <a href="../images/tour/search-results.png" class="gallery_image" rel="gallery_image"
+                title="Archiva provide filterable search results.">
+              <img src="../images/tour/search-results.png" width="150" height="93" style="border: 1px solid silver; margin-left: 0.25em; margin-bottom: 0.25em" alt="" /><br/>
+              7. Filterable search results
+            </a>
+          </td>
+          <td>
+            <a href="../images/tour/security.png" class="gallery_image" rel="gallery_image"
+                title="Archiva uses the Redback security framework to provide flexible role-based security controls for repositories.
+                          You can use the graphical interface to maintain user accounts, as well as secure repositories for read and/or write
+                          access for individuals, or given roles.">
+              <img src="../images/tour/security.png" width="150" height="93" style="border: 1px solid silver; margin-left: 0.25em; margin-bottom: 0.25em" alt="" /><br/>
+              8. Role-based Security
+            </a>
+          </td>
+
+        </tr>
+        <tr>
+          <td>
+            <a href="../images/tour/reports.png" class="gallery_image" rel="gallery_image"
+                title="Archiva monitors the state of the managed repositories and keeps track of
+                          potential problems to allow improvement of metadata and to assist in
+                          troubleshooting problems.">
+              <img src="../images/tour/reports.png" width="150" height="93" style="border: 1px solid silver; margin-left: 0.25em; margin-bottom: 0.25em" alt="" /><br/>
+              9. Integrity Reports
+            </a>
+          </td>
+          <td>
+            <a href="../images/tour/maintenance.png" class="gallery_image" rel="gallery_image"
+                title="Archiva has utilities called consumers that can be used for maintaining the
+                          Archiva repositories. These can be configured or activated in the Repository
+                          Scanning section of the webapp. The configuration are stored in Archiva's
+                          xml configuration files, meaning you can also hand-edit these config files to
+                          enable or disable these consumers.">
+              <img src="../images/tour/maintenance.png" width="150" height="93" style="border: 1px solid silver; margin-left: 0.25em; margin-bottom: 0.25em" alt="" /><br/>
+              10. Maintenance
+            </a>
+          </td>
+          <td>
+            <a href="../images/proxy-connectors-rules.png" class="gallery_image" rel="gallery_image"
+                title="Archiva has a screen to configure in a bulk mode black/white list when fetching artifacts from remote repositories.">
+              <img src="../images/proxy-connectors-rules.png" width="150" height="93" style="border: 1px solid silver; margin-left: 0.25em; margin-bottom: 0.25em" alt="" /><br/>
+              11. ProxyConnectors Rules
+            </a>
+          </td>
+        </tr>
+      </table>
+    </section>
+  </body>
+</document>

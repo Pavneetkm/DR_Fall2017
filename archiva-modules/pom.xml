@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+~ Licensed to the Apache Software Foundation (ASF) under one
+~ or more contributor license agreements.  See the NOTICE file
+~ distributed with this work for additional information
+~ regarding copyright ownership.  The ASF licenses this file
+~ to you under the Apache License, Version 2.0 (the
+~ "License"); you may not use this file except in compliance
+~ with the License.  You may obtain a copy of the License at
+~
+~  http://www.apache.org/licenses/LICENSE-2.0
+~
+~ Unless required by applicable law or agreed to in writing,
+~ software distributed under the License is distributed on an
+~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+~ KIND, either express or implied.  See the License for the
+~ specific language governing permissions and limitations
+~ under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>archiva</artifactId>
+    <groupId>org.apache.archiva</groupId>
+    <version>3.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>archiva-modules</artifactId>
+  <packaging>pom</packaging>
+  <name>Archiva :: Modules</name>
+  <url>http://archiva.apache.org/ref/${project.version}</url>
+
+  <properties>
+    <siteFilePath>${user.home}/archiva-sites/archiva-ref-${project.version}/</siteFilePath>
+    <siteUrlDeployment>file://${siteFilePath}</siteUrlDeployment>
+    <scmPubCheckoutDirectory>${basedir}/.site-content</scmPubCheckoutDirectory>
+  </properties>
+
+  <modules>
+    <module>archiva-base</module>
+    <module>archiva-scheduler</module>
+    <module>archiva-web</module>
+    <module>archiva-karaf</module>
+    <module>metadata</module>
+    <module>plugins</module>
+  </modules>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-scm-publish-plugin</artifactId>
+          <configuration>
+            <pubScmUrl>scm:svn:https://svn.apache.org/repos/asf/archiva/site-content/ref/${project.version}</pubScmUrl>
+            <checkinComment>Apache Archiva Versionned ref for ${project.version}</checkinComment>
+            <content>${project.build.directory}/staging</content>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <reporting>
+    <plugins>
+      
+      <!-- jxr first -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>${jxrVersion}</version>
+        <configuration>
+          <aggregate>true</aggregate>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${checkstyleVersion}</version>
+        <!-- inherited is needed to use netbeans checkstyle based code formatting -->
+        <!-- 2013 05 03 may change in future release -->
+        <inherited>true</inherited>
+        <configuration>
+          <includeTestSourceDirectory>true</includeTestSourceDirectory>
+          <configLocation>config/maven_checks.xml</configLocation>
+        </configuration>
+      </plugin>
+      <plugin>
+        <!-- No need for the standard project reports -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>${maven-project-info-reports-plugin.version}</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${javadocPluginVersion}</version>
+        <inherited>false</inherited>
+        <configuration>
+          <notimestamp>true</notimestamp>
+          <javadocVersion>1.8</javadocVersion>
+          <source>1.8</source>
+          <links>
+            <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
+            <link>http://docs.oracle.com/javase/8/docs/api</link>
+            <link>http://commons.apache.org/collections/apidocs-COLLECTIONS_3_0/</link>
+            <link>http://commons.apache.org/dbcp/apidocs/</link>
+            <link>http://commons.apache.org/fileupload/apidocs/</link>
+            <link>http://commons.apache.org/httpclient/apidocs/</link>
+            <link>http://commons.apache.org/logging/apidocs/</link>
+            <link>http://commons.apache.org/pool/apidocs/</link>
+            <link>http://junit.sourceforge.net/javadoc/</link>
+            <link>http://logging.apache.org/log4j/1.2/apidocs/</link>
+            <link>http://jakarta.apache.org/regexp/apidocs/</link>
+            <link>http://velocity.apache.org/engine/releases/velocity-1.5/apidocs/</link>
+          </links>
+          <linksource>true</linksource>
+          <show>private</show>
+          <tags>
+            <tag>
+              <name>todo</name>
+              <placement>a</placement>
+              <head>To Do:</head>
+            </tag>
+          </tags>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <!-- Don't need tests -->
+              <report>aggregate</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+
+    </plugins>
+  </reporting>
+
+  <profiles>
+    <profile>
+      <id>reporting</id>
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>${checkstyleVersion}</version>
+            <inherited>false</inherited>
+            <reportSets>
+              <reportSet>
+                <reports>
+                  <report>checkstyle-aggregate</report>
+                </reports>
+              </reportSet>
+            </reportSets>
+          </plugin>
+        </plugins>
+      </reporting>
+    </profile>
+  </profiles>
+
+
+
+  <distributionManagement>
+    <site>
+      <id>apache.website</id>
+      <url>${siteUrlDeployment}</url>
+    </site>
+  </distributionManagement>
+</project>

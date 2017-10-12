@@ -1,0 +1,152 @@
+<?xml version="1.0"?>
+
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context 
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd"
+       default-lazy-init="true">
+
+  <context:annotation-config/>
+  <context:component-scan base-package="org.apache.archiva.metadata.repository"/>
+
+  <!-- for testing repo purge using retention count -->
+
+  <bean name="knownRepositoryContentConsumer#repo-purge-consumer-by-retention-count" class="org.apache.archiva.consumers.core.repository.RepositoryPurgeConsumer">
+    <property name="configuration" ref="archivaConfiguration#retention-count"/>
+    <property name="repositoryContentFactory" ref="repositoryContentFactory#retention-count"/>
+    <property name="filetypes" ref="filetypes#retention-count"/>
+  </bean>
+
+  <bean name="archivaConfiguration#retention-count" class="org.apache.archiva.configuration.DefaultArchivaConfiguration">
+    <property name="registry" ref="registry#retention-count"/>
+  </bean>
+
+  <alias name="archivaConfiguration#retention-count" alias="archivaConfiguration"/>
+  <alias name="archivaConfiguration#retention-count" alias="archivaConfiguration#default"/>
+
+  <bean name="repositoryContentFactory#retention-count" class="org.apache.archiva.repository.RepositoryContentFactory">
+    <property name="archivaConfiguration" ref="archivaConfiguration#retention-count"/>
+  </bean>
+
+  <bean name="registry#retention-count" class="org.apache.archiva.redback.components.registry.commons.CommonsConfigurationRegistry">
+    <property name="properties">
+      <value>
+        <![CDATA[
+        <configuration>
+          <xml fileName="${basedir}/src/test/conf/repository-manager.xml"
+               config-name="org.apache.archiva" config-at="org.apache.archiva"/>
+        </configuration>
+        ]]>
+      </value>
+    </property>
+  </bean>
+
+  <bean name="filetypes#retention-count" class="org.apache.archiva.configuration.FileTypes">
+    <property name="archivaConfiguration" ref="archivaConfiguration#retention-count"/>
+  </bean>
+
+  <alias name="filetypes#retention-count" alias="filetypes"/>
+
+  <!-- for testing repo purge by # of days old and delete cleanupSnapshots -->
+  <bean name="knownRepositoryContentConsumer#repo-purge-consumer-by-days-old" class="org.apache.archiva.consumers.core.repository.RepositoryPurgeConsumer">
+    <property name="configuration" ref="archivaConfiguration#days-old"/>
+    <property name="repositoryContentFactory" ref="repositoryContentFactory#days-old"/>
+    <property name="filetypes" ref="filetypes#days-old"/>
+  </bean>
+
+  <bean name="archivaConfiguration#days-old" class="org.apache.archiva.configuration.DefaultArchivaConfiguration">
+    <property name="registry" ref="registry#days-old"/>
+  </bean>
+
+  <bean name="repositoryContentFactory#days-old" class="org.apache.archiva.repository.RepositoryContentFactory">
+    <property name="archivaConfiguration" ref="archivaConfiguration#days-old"/>
+  </bean>
+
+  <bean name="registry#days-old" class="org.apache.archiva.redback.components.registry.commons.CommonsConfigurationRegistry">
+    <property name="properties">
+      <value>
+        <![CDATA[
+        <configuration>
+          <xml fileName="${basedir}/src/test/conf/repository-manager-daysOld.xml"
+               config-name="org.apache.archiva" config-at="org.apache.archiva"/>
+        </configuration>
+        ]]>
+      </value>
+    </property>
+  </bean>
+
+  <bean name="filetypes#days-old" class="org.apache.archiva.configuration.FileTypes">
+    <property name="archivaConfiguration" ref="archivaConfiguration#days-old"/>
+  </bean>
+
+  <bean name="commons-configuration" class="org.apache.archiva.redback.components.registry.commons.CommonsConfigurationRegistry">
+    <property name="properties">
+      <value>
+        <![CDATA[
+        <configuration>
+          <system/>
+          <xml fileName="${appserver.base}/conf/archiva.xml" config-forceCreate="true"
+               config-optional="true"
+               config-name="org.apache.archiva.base" config-at="org.apache.archiva"/>
+        </configuration>
+        ]]>
+      </value>
+    </property>
+  </bean>
+
+  <!-- ***
+     JPA settings
+     *** -->
+  <bean name="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+    <property name="jpaVendorAdapter" >
+      <bean class="org.springframework.orm.jpa.vendor.OpenJpaVendorAdapter" />
+    </property>
+    <property name="persistenceXmlLocation" value="classpath:META-INF/persistence-hsqldb.xml" />
+    <property name="jpaPropertyMap">
+      <map>
+        <entry key="openjpa.ConnectionURL" value="jdbc:hsqldb:mem:redback_database" />
+        <entry key="openjpa.ConnectionDriverName" value="org.hsqldb.jdbcDriver" />
+        <entry key="openjpa.ConnectionUserName" value="sa" />
+        <entry key="openjpa.ConnectionPassword" value="" />
+        <entry key="openjpa.Log" value="${openjpa.Log:DefaultLevel=INFO,Runtime=ERROR,Tool=ERROR,SQL=ERROR,Schema=ERROR,MetaData=ERROR}" />
+        <entry key="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)" />
+        <entry key="openjpa.jdbc.MappingDefaults"
+               value="ForeignKeyDeleteAction=restrict,JoinForeignKeyDeleteAction=restrict"/>
+      </map>
+    </property>
+
+  </bean>
+
+  <bean name="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager" >
+    <property name="entityManagerFactory" ref="entityManagerFactory" />
+  </bean>
+
+  <tx:annotation-driven />
+  <!-- ***
+     End of JPA settings
+     *** -->
+
+
+
+</beans>
